@@ -42,8 +42,16 @@ jobs:
       - name: Terraform Init (Backend)
         working-directory: backend
         run: terraform init
+
+      - name: Terraform Plan (Backend)
+        working-directory: backend
+        id: backend_plan
+        run: |
+          terraform plan -detailed-exitcode || exit_code=$? && echo "::set-output name=exitcode::$exit_code"
+
       - name: Terraform Apply (Backend)
         working-directory: backend
+        if: steps.backend_plan.outputs.exitcode == '2'
         run: terraform apply -auto-approve
 
   main_infra:
@@ -65,8 +73,11 @@ jobs:
 
       - name: Terraform Plan (Dev)
         working-directory: terraform_dev
-        run: terraform plan
+        id: dev_plan
+        run: |
+          terraform plan -detailed-exitcode || exit_code=$? && echo "::set-output name=exitcode::$exit_code"
 
       - name: Terraform Apply (Dev)
         working-directory: terraform_dev
+        if: steps.dev_plan.outputs.exitcode == '2'
         run: terraform apply -auto-approve
