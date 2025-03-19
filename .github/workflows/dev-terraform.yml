@@ -58,7 +58,7 @@ jobs:
       - name: Checkout main repository
         uses: actions/checkout@v2
         with:
-          path: main
+          path: terraform_dev
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
