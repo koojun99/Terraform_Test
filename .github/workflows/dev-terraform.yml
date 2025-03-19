@@ -47,25 +47,26 @@ jobs:
         run: terraform apply -auto-approve
 
   main_infra:
-    name: Deploy Main Infrastructure
+    name: Deploy Dev Infrastructure
     runs-on: ubuntu-latest
     needs: backend_infra
     steps:
-      - name: Checkout main repository
+      - name: Checkout Dev repository
         uses: actions/checkout@v2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: latest
-      - name: Terraform Init (Main)
-        working-directory: main
+
+      - name: Terraform Init (Dev)
+        working-directory: terraform_dev
         run: terraform init
 
-      - name: Terraform Plan (Main)
-        working-directory: main
+      - name: Terraform Plan (Dev)
+        working-directory: terraform_dev
         run: terraform plan
 
-      - name: Terraform Apply (Main)
-        working-directory: main
+      - name: Terraform Apply (Dev)
+        working-directory: terraform_dev
         run: terraform apply -auto-approve
