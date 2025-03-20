@@ -130,6 +130,14 @@ jobs:
       - name: Terraform Init (Backend)
         working-directory: backend
         run: terraform init
+      
+      - name: Terraform Import S3 Bucket
+        working-directory: backend
+        run: terraform import aws_s3_bucket.terraform_state terraform-state-test-ktb-morgan || echo "Bucket import failed."
+      
+      - name: Terraform Import DynamoDB Table
+        working-directory: backend
+        run: terraform import aws_dynamodb_table.terraform_state_lock terraform-state-lock || echo "DynamoDB table import failed."
 
       - name: Terraform Destroy (Backend)
         working-directory: backend
