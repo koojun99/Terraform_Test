@@ -15,7 +15,7 @@ resource "aws_vpc" "test_vpc" {
   enable_dns_hostnames = true
   instance_tenancy = "default"
   tags = {
-    Name = "vpc_morgan_terraform_2"
+    Name = "vpc_morgan_terraform"
   }
   
 }
