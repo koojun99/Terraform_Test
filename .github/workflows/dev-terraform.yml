@@ -127,6 +127,15 @@ jobs:
       - name: Terraform Destroy (Dev)
         working-directory: terraform_dev
         run: terraform destroy -auto-approve
+      
+      - name: Empty S3 Bucket
+        working-directory: backend
+        run: |
+          BUCKET=terraform-state-test-ktb-morgan
+          aws s3api list-object-versions --bucket $BUCKET --query '{Objects: Versions[].{Key:Key,VersionId:VersionId}}' > versions.json
+          aws s3api delete-objects --bucket $BUCKET --delete file://versions.json || echo "No object versions to delete"
+          aws s3api list-object-versions --bucket $BUCKET --query '{Objects: DeleteMarkers[].{Key:Key,VersionId:VersionId}}' > markers.json
+          aws s3api delete-objects --bucket $BUCKET --delete file://markers.json || echo "No delete markers to delete"
 
       # 백엔드 리소스를 대상으로 실행 (예: backend 디렉토리)
       - name: Terraform Init (Backend)
