@@ -38,6 +38,15 @@ jobs:
           aws-access-key-id: ${{ secrets.TF_DEV_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TF_DEV_AWS_SECRET_ACCESS_KEY }}   # 오타 여부 확인
           aws-region: ${{ env.AWS_REGION }}
+      
+      # (선택 사항) 기존 백엔드 리소스를 Terraform state에 등록하는 단계
+      - name: Terraform Import S3 Bucket
+        working-directory: backend
+        run: terraform import aws_s3_bucket.terraform_state terraform-state-test-ktb-morgan || echo "Bucket already imported"
+      
+      - name: Terraform Import DynamoDB Table
+        working-directory: backend
+        run: terraform import aws_dynamodb_table.terraform_state_lock terraform-state-lock || echo "DynamoDB table already imported"
 
       - name: Terraform Init (Backend)
         working-directory: backend
